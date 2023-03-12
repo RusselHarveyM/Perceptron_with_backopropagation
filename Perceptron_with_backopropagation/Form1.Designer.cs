@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.saveWeightsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadWeightsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -69,7 +70,6 @@
             this.output4 = new System.Windows.Forms.PictureBox();
             this.output9 = new System.Windows.Forms.PictureBox();
             this.output8 = new System.Windows.Forms.PictureBox();
-            this.loadWeightsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -104,6 +104,13 @@
             this.saveWeightsToolStripMenuItem.Text = "Save Weights";
             this.saveWeightsToolStripMenuItem.Click += new System.EventHandler(this.saveWeightsToolStripMenuItem_Click);
             // 
+            // loadWeightsToolStripMenuItem
+            // 
+            this.loadWeightsToolStripMenuItem.Name = "loadWeightsToolStripMenuItem";
+            this.loadWeightsToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
+            this.loadWeightsToolStripMenuItem.Text = "Load Weights";
+            this.loadWeightsToolStripMenuItem.Click += new System.EventHandler(this.loadWeightsToolStripMenuItem_Click);
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Black;
@@ -118,11 +125,12 @@
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.White;
+            this.button1.BackColor = System.Drawing.Color.DimGray;
             this.button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(506, 301);
+            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button1.Location = new System.Drawing.Point(518, 301);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(132, 57);
+            this.button1.Size = new System.Drawing.Size(137, 57);
             this.button1.TabIndex = 6;
             this.button1.Text = "Train";
             this.button1.UseVisualStyleBackColor = false;
@@ -408,12 +416,13 @@
             // 
             this.button2.BackColor = System.Drawing.Color.White;
             this.button2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button2.Location = new System.Drawing.Point(695, 301);
+            this.button2.Location = new System.Drawing.Point(684, 301);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(132, 57);
+            this.button2.Size = new System.Drawing.Size(136, 57);
             this.button2.TabIndex = 32;
             this.button2.Text = "Test";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // output3
             // 
@@ -514,12 +523,6 @@
             this.output8.Size = new System.Drawing.Size(82, 74);
             this.output8.TabIndex = 45;
             this.output8.TabStop = false;
-            // 
-            // loadWeightsToolStripMenuItem
-            // 
-            this.loadWeightsToolStripMenuItem.Name = "loadWeightsToolStripMenuItem";
-            this.loadWeightsToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
-            this.loadWeightsToolStripMenuItem.Text = "Load Weights";
             // 
             // Form1
             // 

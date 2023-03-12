@@ -1,4 +1,5 @@
 using Backprop;
+using System;
 
 namespace Perceptron_with_backopropagation
 {
@@ -7,9 +8,48 @@ namespace Perceptron_with_backopropagation
         NeuralNet nn;
         FileStream ifsLabels, ifsImages;
         BinaryReader brLabels, brImages;
+        Bitmap testNumber;
         private Image activeNeuron;
         private double[] output;
-        Bitmap im0, im1, im2, im3, im4, im5, im6, im7, im8, im9;
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            using (testNumber = new Bitmap(@"C:\Users\Lenovo\Pictures\perceptron\testNumber.png"))
+            {
+
+            testNumber = new Bitmap(testNumber, 28, 28);
+
+
+            byte[] pixels = new byte[28 * 28];
+            int index = 0;
+
+                using (var ms = new MemoryStream())
+                {
+                    var bitmap = new Bitmap(28, 28);
+                    for (int x = 0; x < 28; x++)
+                    {
+                        for (int y = 0; y < 28; y++)
+                        {
+                            Color pixelColor = testNumber.GetPixel(y, x);
+                            byte pixelValue = (byte)((pixelColor.R + pixelColor.G + pixelColor.B) / 3);
+                            pixels[index++] = pixelValue;
+                            bitmap.SetPixel(y, x, pixelColor);
+                        }
+                    }
+                    pictureBox1.Image = bitmap;
+
+                    setNeuralNetwork(pixels, 2);
+                }
+            }
+        }
+
+        private void loadWeightsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nn.loadWeights(@"C:\Users\Lenovo\Documents\perceptron_weights\weights.txt");
+            loadWeightsToolStripMenuItem.Enabled = false;
+            button1.Enabled = false;
+            button2.Enabled = true;
+        }
 
         public Form1()
         {
@@ -20,7 +60,7 @@ namespace Perceptron_with_backopropagation
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            nn = new NeuralNet(784, 16, 10);
+            nn = new NeuralNet(784, 32, 10);
             button2.Enabled = false;
             output = new double[10];
             saveWeightsToolStripMenuItem.Enabled = false;
@@ -29,11 +69,19 @@ namespace Perceptron_with_backopropagation
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
-            for (int epoch = 0; epoch <= 2;epoch++)
-            {
-            /*int epoch = 0;*/
+            button2.Enabled = false;
+            loadWeightsToolStripMenuItem.Enabled = false;
+            /*for (int epoch = 0; epoch <= 2;epoch++)
+            {*/
+            int epoch = 0;
             epochCount.Text = Convert.ToString(epoch);
-            /*while (nn.countgood()) {*/
+            while (nn.countgood())
+            {
+                ifsLabels?.Close();
+                ifsImages?.Close();
+                brImages?.Close();
+                brLabels?.Close();
+
                 try
                 {
                 ifsLabels =
@@ -96,7 +144,6 @@ namespace Perceptron_with_backopropagation
                             }
                         }
                         pictureBox1.Image = bitmap;
-                        label2.Text = lbl.ToString();
                         pictureBox1.Refresh();
                         }
                         setNeuralNetwork(dImage.Flatten(), Convert.ToInt32(lbl));
@@ -106,23 +153,24 @@ namespace Perceptron_with_backopropagation
                     /*Console.WriteLine("\nEnd\n");
                     Console.ReadLine();*/
                 }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.ReadLine();
+                }
+                epochCount.Text = Convert.ToString(++epoch);
             }
-                /*epochCount.Text = Convert.ToString(++epoch);*/
-            }
-            ifsImages.Close();
-            brImages.Close();
-            ifsLabels.Close();
-            brLabels.Close();
+            
+            button2.Enabled = true;
             saveWeightsToolStripMenuItem.Enabled = true;
         } 
-        private void setNeuralNetwork(byte[] pixels, double label)
+        private void setNeuralNetwork(byte[] pixels, int label)
         {
 
-            for(int i = 0; i < pixels.Length; i++)
+            label2.Text = label.ToString();
+
+
+            for (int i = 0; i < pixels.Length; i++)
             {
                 nn.setInputs(i, pixels[i]);
             }
@@ -254,7 +302,25 @@ namespace Perceptron_with_backopropagation
             nn.learn();
 
 
-            for(int i = 0; i < 10; i++)
+            guessOutput();
+
+            /*output0.Refresh();
+            output1.Refresh();
+            output2.Refresh();
+            output3.Refresh();
+            output4.Refresh();
+            output5.Refresh();
+            output6.Refresh();
+            output7.Refresh();
+            output8.Refresh();
+            output9.Refresh();*/
+
+           
+        }
+
+        private void guessOutput()
+        {
+            for (int i = 0; i < 10; i++)
             {
                 output[i] = nn.getOuputData(i);
             }
@@ -275,7 +341,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output9.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(9).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.Orange;
                     break;
                 case 1:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2.png");
@@ -289,7 +364,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output9.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(9).png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.Orange;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 2:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(2).png");
@@ -303,7 +387,16 @@ namespace Perceptron_with_backopropagation
                     output9.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(9).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.Orange;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 3:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(3).png");
@@ -317,7 +410,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.Orange;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 4:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(4).png");
@@ -331,7 +433,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.Orange;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 5:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(5).png");
@@ -345,7 +456,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.Orange;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 6:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(6).png");
@@ -359,7 +479,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.Orange;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 7:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(7).png");
@@ -373,7 +502,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.Orange;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 8:
                     activeNeuron = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(8).png");
@@ -387,7 +525,16 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
-
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.Orange;
+                    label4.ForeColor = Color.White;
+                    label3.ForeColor = Color.White;
                     break;
                 case 9:
                     activeNeuron = new Bitmap("c:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\2(9).png");
@@ -401,20 +548,18 @@ namespace Perceptron_with_backopropagation
                     output2.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(2).png"); ;
                     output1.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1.png"); ;
                     output0.BackgroundImage = new Bitmap("C:\\Users\\Lenovo\\source\\repos\\Perceptron_with_backopropagation\\Perceptron_with_backopropagation\\images\\1(1).png"); ;
+                    label12.ForeColor = Color.White;
+                    label11.ForeColor = Color.White;
+                    label10.ForeColor = Color.White;
+                    label9.ForeColor = Color.White;
+                    label8.ForeColor = Color.White;
+                    label7.ForeColor = Color.White;
+                    label6.ForeColor = Color.White;
+                    label5.ForeColor = Color.White;
+                    label4.ForeColor = Color.Orange;
+                    label3.ForeColor = Color.White;
                     break;
             }
-
-            /*output0.Refresh();
-            output1.Refresh();
-            output2.Refresh();
-            output3.Refresh();
-            output4.Refresh();
-            output5.Refresh();
-            output6.Refresh();
-            output7.Refresh();
-            output8.Refresh();
-            output9.Refresh();*/
-
             label12.Text = Convert.ToString(output[1]);
             label11.Text = Convert.ToString(output[2]);
             label10.Text = Convert.ToString(output[3]);
@@ -429,7 +574,7 @@ namespace Perceptron_with_backopropagation
 
         private void saveWeightsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            nn.saveWeights(@"C:\Users\Lenovo\Documents\perceptron_weights");
+            nn.saveWeights(@"C:\Users\Lenovo\Documents\perceptron_weights\weights.txt");
         }
     }
 }
